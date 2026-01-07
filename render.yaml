@@ -2,6 +2,7 @@ services:
   - type: web
     name: symfony-project
     env: php
+    phpVersion: 8.2.20
     buildCommand: "composer install --optimize-autoloader --no-dev"
     startCommand: "php -S 0.0.0.0:$PORT -t public/"
     envVars:
@@ -11,4 +12,3 @@ services:
         value: 0
       - key: APP_SECRET
         generateValue: true
-    instanceSize: free
