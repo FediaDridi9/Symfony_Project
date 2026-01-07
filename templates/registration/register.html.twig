@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - Le Délice{% endblock %}
+
+{% block body %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-md-9">
+                <div class="text-center mb-5">
+                    <h1 class="display-5 fw-bold">Créer un compte</h1>
+                    <p class="lead text-muted">Inscrivez-vous pour réserver facilement votre table</p>
+                </div>
+
+                {{ form_start(registrationForm, {'attr': {'class': 'needs-validation', 'novalidate': ''}}) }}
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.prenom, {
+                                'label': 'Prénom',
+                                'attr': {'class': 'form-control form-control-lg'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.nom, {
+                                'label': 'Nom',
+                                'attr': {'class': 'form-control form-control-lg'}
+                            }) }}
+                        </div>
+                        <div class="col-12">
+                            {{ form_row(registrationForm.email, {
+                                'label': 'Email',
+                                'attr': {'class': 'form-control form-control-lg', 'placeholder': 'votre@email.com'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.telephone, {
+                                'label': 'Téléphone',
+                                'attr': {'class': 'form-control form-control-lg', 'placeholder': '06 12 34 56 78'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.plainPassword, {
+                                'label': 'Mot de passe',
+                                'attr': {'class': 'form-control form-control-lg'}
+                            }) }}
+                            <small class="text-muted">Minimum 6 caractères</small>
+                        </div>
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-getstarted btn-lg px-5 mt-3">
+                                S'inscrire
+                            </button>
+                        </div>
+                        <div class="col-12 text-center mt-4">
+                            <p>Déjà un compte ?
+                                <a href="{{ path('app_login') }}" class="text-decoration-underline">
+                                    Se connecter
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

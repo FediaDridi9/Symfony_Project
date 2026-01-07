@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver une table - Le Délice{% endblock %}
+
+{% block body %}
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h1 class="text-center mb-5">Réserver une table</h1>
+
+                    {{ form_start(form, {'attr': {'class': 'row g-4'}}) }}
+                        <div class="col-md-6">
+                            {{ form_row(form.date, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.heure, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="col-md-12">
+                            {{ form_row(form.nbPersonne, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="col-md-12">
+                            {{ form_row(form.plats, {'attr': {'class': 'form-select'}}) }}
+                        </div>
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-getstarted btn-lg px-5">
+                                Confirmer la réservation
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

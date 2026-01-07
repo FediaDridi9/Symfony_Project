@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Le Délice - Restaurant Gastronomique{% endblock %}
+
+{% block body %}
+    <!-- Hero Section -->
+    <section id="hero" class="hero section light-background">
+        <div class="container">
+            <div class="row gy-4 justify-content-center justify-content-lg-between">
+                <div class="col-lg-5 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                    <h1>Bienvenue au<br><span>Restaurant Le Délice</span></h1>
+                    <p data-aos="fade-up" data-aos-delay="100">
+                        Découvrez une cuisine raffinée, faite maison avec des produits frais et de saison.
+                    </p>
+                    <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
+                        <a href="#menu" class="btn-get-started me-3">Voir le menu</a>
+                        {% if app.user %}
+                            <a href="{{ path('app_reservation_new') }}" class="btn-get-started">
+                                Réserver une table
+                            </a>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="btn-get-started">
+                                Se connecter pour réserver
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out">
+                    <img src="{{ asset('assets/img/hero-img.png') }}" class="img-fluid animated" alt="Restaurant Le Délice">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Hero Section -->
+
+    <!-- Menu Section - Dynamique avec tes catégories et plats -->
+    <section id="menu" class="menu section">
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Notre Menu</h2>
+            <p><span>Découvrez</span> <span class="description-title">Nos Plats du Moment</span></p>
+        </div>
+        <div class="container">
+            <!-- Onglets des catégories -->
+            <ul class="nav nav-tabs d-flex justify-content-center" data-aos="fade-up" data-aos-delay="100">
+                {% for categorie in categories %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if loop.first %}active show{% endif %}"
+                           data-bs-toggle="tab"
+                           data-bs-target="#menu-{{ categorie.id }}">
+                            <h4>{{ categorie.nom }}</h4>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <span class="nav-link disabled">Aucune catégorie disponible</span>
+                    </li>
+                {% endfor %}
+            </ul>
+            <!-- Contenu des onglets -->
+            <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
+                {% for categorie in categories %}
+                    <div class="tab-pane fade {% if loop.first %}active show{% endif %}"
+                         id="menu-{{ categorie.id }}">
+                        <div class="tab-header text-center">
+                            <p>Menu</p>
+                            <h3>{{ categorie.nom }}</h3>
+                        </div>
+                        <div class="row gy-5">
+                            {% for plat in categorie.plats %}
+                                <div class="col-lg-4 menu-item">
+                                    {% if plat.photo %}
+                                        <a href="{{ asset('uploads/photos/' ~ plat.photo) }}" class="glightbox">
+                                            <img src="{{ asset('uploads/photos/' ~ plat.photo) }}"
+                                                 class="menu-img img-fluid"
+                                                 alt="{{ plat.nom }}">
+                                        </a>
+                                    {% else %}
+                                        <img src="{{ asset('assets/img/menu/menu-item-1.png') }}"
+                                             class="menu-img img-fluid"
+                                             alt="{{ plat.nom }}">
+                                    {% endif %}
+                                    <h4>{{ plat.nom }}</h4>
+                                    <p class="ingredients">
+                                        {{ plat.description|default('Délicieux plat fait maison') }}
+                                    </p>
+                                    <p class="price">
+                                        {{ plat.prix }} DT
+                                    </p>
+                                </div>
+                            {% else %}
+                                <div class="col-12 text-center">
+                                    <p class="text-muted">Aucun plat dans cette catégorie pour le moment.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="tab-pane fade active show">
+                        <div class="text-center py-5">
+                            <p>Aucune catégorie disponible pour le moment.</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- /Menu Section -->
+
+    <!-- Section Réservation -->
+    <section id="book-a-table" class="book-a-table section">
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Réservation</h2>
+            <p><span>Réservez</span> <span class="description-title">Votre Table</span></p>
+        </div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    {% if app.user %}
+                        <p class="lead mb-4">
+                            Bonjour <strong>{{ app.user.prenom }} {{ app.user.nom }}</strong>,<br>
+                            prêt à réserver votre table ?
+                        </p>
+                        <a href="{{ path('app_reservation_new') }}" class="btn-getstarted btn-lg px-5">
+                            Réserver une table maintenant
+                        </a>
+                    {% else %}
+                        <p class="lead mb-4">
+                            Connectez-vous ou inscrivez-vous pour réserver une table en ligne.
+                        </p>
+                        <a href="{{ path('app_login') }}" class="btn-getstarted btn-lg me-3">
+                            Se connecter
+                        </a>
+                        <a href="{{ path('app_register') }}" class="btn btn-outline-light btn-lg">
+                            Créer un compte
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Section Réservation -->
+
+    <!-- Section Contact intégrée sur la page d'accueil -->
+    {{ include('contact/index.html.twig') }}
+
+{% endblock %}

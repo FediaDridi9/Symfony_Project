@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - Le Délice{% endblock %}
+
+{% block body %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="text-center mb-5">
+                    <h1 class="display-5 fw-bold">Connexion</h1>
+                    <p class="lead text-muted">Connectez-vous pour réserver votre table</p>
+                </div>
+
+                {% if error %}
+                    <div class="alert alert-danger text-center">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% if app.user %}
+                        <div class="alert alert-info text-center">
+                            Vous êtes déjà connecté en tant que {{ app.user.userIdentifier }}.
+                            <a href="{{ path('app_logout') }}">Déconnexion</a>
+                        </div>
+                    {% else %}
+                        <div class="mb-4">
+                            <label for="inputEmail" class="form-label">Email</label>
+                            <input type="email" value="{{ last_username }}" name="email" id="inputEmail"
+                                   class="form-control form-control-lg" autocomplete="email" required autofocus>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="inputPassword" class="form-label">Mot de passe</label>
+                            <input type="password" name="password" id="inputPassword"
+                                   class="form-control form-control-lg" autocomplete="current-password" required>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input type="checkbox" name="_remember_me" id="remember_me" class="form-check-input">
+                            <label class="form-check-label" for="remember_me">Rester connecté</label>
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <div class="text-center">
+                            <button class="btn btn-getstarted btn-lg px-5" type="submit">
+                                Se connecter
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <p>Pas encore de compte ?
+                                <a href="{{ path('app_register') }}" class="text-decoration-underline">
+                                    S'inscrire
+                                </a>
+                            </p>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

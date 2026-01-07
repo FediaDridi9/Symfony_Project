@@ -1,0 +1,129 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Administration - Restaurant{% endblock %}
+
+{% block content_title %}
+    <div class="d-flex align-items-center">
+        <h1 class="h3 mb-0">Tableau de bord</h1>
+    </div>
+{% endblock %}
+
+{% block main %}
+    <!-- Les 4 cartes -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
+        <div class="col">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h2 class="card-title mb-0 display-5">{{ en_attente }}</h2>
+                        <p class="mb-0">En attente</p>
+                    </div>
+                    <i class="fas fa-clock fa-3x opacity-75 mt-3"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h2 class="card-title mb-0 display-5">{{ confirmees }}</h2>
+                        <p class="mb-0">Confirmées</p>
+                    </div>
+                    <i class="fas fa-check-circle fa-3x opacity-75 mt-3"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h2 class="card-title mb-0 display-5">{{ plats }}</h2>
+                        <p class="mb-0">Plats disponibles</p>
+                    </div>
+                    <i class="fas fa-utensils fa-3x opacity-75 mt-3"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h2 class="card-title mb-0 display-5">{{ clients }}</h2>
+                        <p class="mb-0">Clients inscrits</p>
+                    </div>
+                    <i class="fas fa-users fa-3x opacity-75 mt-3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphique -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm bg-dark text-white">
+                <div class="card-header bg-primary">
+                    <h5 class="mb-0">Répartition des réservations par jour de la semaine</h5>
+                </div>
+                <div class="card-body p-4">
+                    <canvas id="reservationsChart" width="400" height="400"></canvas>
+                    <div id="chartError" class="text-danger mt-3 text-center d-none">
+                        Erreur : Chart.js n'a pas pu être chargé. Vérifiez votre connexion internet ou le fichier local.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bienvenue -->
+    <div class="mt-5 p-4 bg-light rounded shadow-sm">
+        <h4>
+            Bonjour <strong>{{ app.user.prenom|default('Admin') }} {{ app.user.nom|default('') }}</strong>
+            <span class="text-success">(Administrateur)</span>
+        </h4>
+        <p class="lead mb-0">
+            Utilisez le menu de gauche pour gérer les catégories, plats, réservations et utilisateurs.
+        </p>
+    </div>
+{% endblock %}
+
+{% block body_javascripts %}
+    <!-- Chargement de Chart.js via CDN (marche si internet OK) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof Chart === 'undefined') {
+                document.getElementById('chartError').classList.remove('d-none');
+                console.error('Chart.js non chargé');
+                return;
+            }
+
+            const ctx = document.getElementById('reservationsChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: {{ reservations_par_jour_labels|json_encode|raw }},
+                    datasets: [{
+                        data: {{ reservations_par_jour_data|json_encode|raw }},
+                        backgroundColor: [
+                            '#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf'
+                        ],
+                        borderColor: '#000',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#fff', padding: 20, font: { size: 14 } }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}
