@@ -1,7 +1,7 @@
 # Utilise PHP 8.2 avec Apache
 FROM php:8.2-apache
 
-# Installe les dépendances système
+# Installe les dépendances système (y compris PostgreSQL)
 RUN apt-get update && apt-get install -y \
     git \
     zip \
@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libpq-dev \
     && docker-php-ext-install pdo_mysql zip opcache pdo_pgsql
 
 # Active mod_rewrite
@@ -24,7 +25,7 @@ COPY --from=composer:2.9 /usr/bin/composer /usr/bin/composer
 # Copie le code
 COPY . /var/www/html
 
-# Configure Apache proprement pour Symfony
+# Configure Apache pour Symfony
 RUN echo '<VirtualHost *:80>\n\
     DocumentRoot /var/www/html/public\n\
     <Directory /var/www/html/public>\n\
