@@ -1,7 +1,7 @@
-# Utilise l'image officielle PHP 8.2 avec Apache (intl déjà inclus)
+# Utilise PHP 8.2 avec Apache
 FROM php:8.2-apache
 
-# Installe les outils système nécessaires
+# Installe les dépendances système
 RUN apt-get update && apt-get install -y \
     git \
     zip \
@@ -12,26 +12,28 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     && docker-php-ext-install pdo_mysql zip opcache
 
-# Active mod_rewrite pour Symfony
+# Active mod_rewrite
 RUN a2enmod rewrite
 
-# Définit le répertoire de travail
+# Définit le répertoire
 WORKDIR /var/www/html
 
-# Installe Composer proprement (version stable)
+# Installe Composer
 COPY --from=composer:2.9 /usr/bin/composer /usr/bin/composer
 
-# Copie les fichiers du projet
+# Copie le code
 COPY . /var/www/html
 
-# Installe les dépendances en production
+# Configure Apache pour utiliser /public comme racine
+RUN echo "DocumentRoot /var/www/html/public" >> /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+# Installe les dépendances
 RUN composer install --optimize-autoloader --no-dev
 
-# Configure Apache
+# Configure le nom du serveur
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Expose le port 80 (Render utilisera $PORT)
 EXPOSE 80
 
-# Lance Apache
 CMD ["apache2-foreground"]
