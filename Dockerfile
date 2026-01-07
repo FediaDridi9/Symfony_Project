@@ -24,9 +24,17 @@ COPY --from=composer:2.9 /usr/bin/composer /usr/bin/composer
 # Copie le code
 COPY . /var/www/html
 
-# Configure Apache pour utiliser /public comme racine
-RUN echo "DocumentRoot /var/www/html/public" >> /etc/apache2/sites-available/000-default.conf
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+# Configure Apache proprement pour Symfony
+RUN echo '<VirtualHost *:80>\n\
+    DocumentRoot /var/www/html/public\n\
+    <Directory /var/www/html/public>\n\
+        Options Indexes FollowSymLinks MultiViews\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
+    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
 # Installe les dépendances
 RUN composer install --optimize-autoloader --no-dev
