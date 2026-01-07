@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    && docker-php-ext-install pdo_mysql zip opcache
+    && docker-php-ext-install pdo_mysql zip opcache pdo_pgsql
 
 # Active mod_rewrite
 RUN a2enmod rewrite
